@@ -1,37 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayManager : MonoBehaviour
 {
     [SerializeField] BallController ballController;
     [SerializeField] CameraController camController;
+    [SerializeField] GameObject finishWindow;
+    [SerializeField] TMP_Text finishText;
+    [SerializeField] TMP_Text shootCountText;
 
     bool isBallOutside;
     bool isBallTeleporting;
 
     bool isGoal;
     Vector3 lastBallPosition;
+
+    private void OnEnable() 
+    {
+       ballController.onBallShooted.AddListener(UpdateShootCount);
+    }
+
+    private void OnDisable() 
+    {
+       ballController.onBallShooted.RemoveListener(UpdateShootCount);
+    }
    private void Update()
    {
-          if(ballController.ShootingMode)
-          {
-               lastBallPosition = ballController.transform.position;
-          }
+       // Debug.Log(
+       //        ballController.ShootingMode.ToString() + " " +
+       //        ballController.IsMove() + " " +
+       //        isBallOutside + " " +
+       //        ballController.enabled + " " +
+       //        isBallTeleporting + " " +
+       //        isGoal
+       //        );
 
-          var inputActive = Input.GetMouseButton(0)
-               && ballController.IsMove() == false
-               && ballController.ShootingMode == false
-               && isBallOutside == false;
+       if(ballController.ShootingMode)
+       {
+              lastBallPosition = ballController.transform.position;
+       }
+
+       var inputActive = Input.GetMouseButton(0)
+              && ballController.IsMove() == false
+              && ballController.ShootingMode == false
+              && isBallOutside == false;
 
         camController.SetInputActive(inputActive);
    }
 
    public void OnBallGoalEnter()
    {
-          isGoal = true;
-          ballController.enabled = false;
-          // TODO window palyer win window popup
+       isGoal = true;
+       ballController.enabled = false;
+       finishWindow.gameObject.SetActive(true);
+       finishText.text = "Finished!!!\n" + " Shoot Count : " + ballController.ShootCount;
    }
 
    public void OnBallOutside()
@@ -62,5 +86,10 @@ public class PlayManager : MonoBehaviour
           ballController.enabled = true;
           isBallOutside = false;
           isBallTeleporting = false;
+   }
+
+   public void UpdateShootCount(int shootCount)
+   {
+       shootCountText.text = shootCount.ToString();
    }
 }
