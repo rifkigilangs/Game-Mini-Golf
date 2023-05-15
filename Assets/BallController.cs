@@ -7,6 +7,8 @@ using UnityEngine.Events;
 
 public class BallController : MonoBehaviour, IPointerDownHandler
 {
+    [SerializeField] AudioManager audioManager;
+    [SerializeField] AudioClip hitClip;
     [SerializeField] Collider col;
     [SerializeField] Rigidbody rb;
     [SerializeField] float force;
@@ -113,5 +115,13 @@ public class BallController : MonoBehaviour, IPointerDownHandler
             return;
 
         shootingMode = true;
+    }
+
+    private void OnTriggerEnter(Collider other) 
+    {
+        if(other.CompareTag("Ball"))
+        {
+            audioManager.PlaySFX(hitClip);
+        }
     }
 }

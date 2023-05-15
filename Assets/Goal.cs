@@ -5,12 +5,17 @@ using UnityEngine.Events;
 
 public class Goal : MonoBehaviour
 {
+    [SerializeField] AudioManager audioManager;
+    [SerializeField] AudioClip winnerClip;
+
     public UnityEvent OnBallGoalEnter = new UnityEvent();
+
     private void OnTriggerEnter(Collider other) 
     {
         if(other.CompareTag("Ball"))
         {
             OnBallGoalEnter.Invoke();
+            audioManager.PlaySFX(winnerClip);
         }
     }
 }

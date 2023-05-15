@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayManager : MonoBehaviour
 {
+    [SerializeField] AudioManager audioManager;
     [SerializeField] BallController ballController;
     [SerializeField] CameraController camController;
     [SerializeField] GameObject finishWindow;
@@ -15,6 +17,7 @@ public class PlayManager : MonoBehaviour
     bool isBallTeleporting;
 
     bool isGoal;
+    
     Vector3 lastBallPosition;
 
     private void OnEnable() 
@@ -28,15 +31,6 @@ public class PlayManager : MonoBehaviour
     }
    private void Update()
    {
-       // Debug.Log(
-       //        ballController.ShootingMode.ToString() + " " +
-       //        ballController.IsMove() + " " +
-       //        isBallOutside + " " +
-       //        ballController.enabled + " " +
-       //        isBallTeleporting + " " +
-       //        isGoal
-       //        );
-
        if(ballController.ShootingMode)
        {
               lastBallPosition = ballController.transform.position;
@@ -61,10 +55,10 @@ public class PlayManager : MonoBehaviour
    public void OnBallOutside()
    {
           if(isGoal)
-               return;
+              return;
 
           if(isBallTeleporting == false)
-               Invoke("TeleportBallLastPosition", 3);
+              Invoke("TeleportBallLastPosition", 3);
 
           ballController.enabled = false;
           isBallOutside = true;
@@ -92,4 +86,15 @@ public class PlayManager : MonoBehaviour
    {
        shootCountText.text = shootCount.ToString();
    }
+
+   public void BackToMainMenu()
+    {
+        SceneManager.LoadScene("Main");
+    }
+
+    public void Replay()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
 }
